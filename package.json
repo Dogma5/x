@@ -1,0 +1,44 @@
+{
+	"name": "x",
+	"version": "1.0.0",
+	"description": "Something for a game",
+	"main": "index.js",
+	"scripts": {
+		"serve": "browser-sync ./ -f src/js/*.js assets/",
+		"watch": "npm run serve",
+		"test": "eslint src/js/*.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Dogma5/x.git"
+	},
+	"keywords": [
+		"game",
+		"rpg"
+	],
+	"author": {
+		"name": "Dogma5",
+		"url": "https://github.com/dogma5"
+	},
+	"contributors": [
+		{
+			"name": "Alex Page",
+			"email": "alex@alexpage.com.au",
+			"url": "https://alexpage.com.au"
+		},
+		{
+			"name": "Trevor Brennan",
+			"email": "t@trevorbrennan.com",
+			"url": "https://github.com/TrebBrennan"
+		}
+	],
+	"bugs": {
+		"url": "https://github.com/Dogma5/x/issues"
+	},
+	"homepage": "https://github.com/Dogma5/x#readme",
+	"dependencies": {},
+	"devDependencies": {
+		"browser-sync": "^2.24.7"
+	},
+	"license": "GPL-3.0"
+}
