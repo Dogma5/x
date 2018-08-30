@@ -1,8 +1,5 @@
 body {
 	margin: 0;
-}
-
-.game {
 	background: #422936;
 	height: 100vh;
 	width: 100vw;
@@ -13,5 +10,7 @@ body {
 
 canvas {
 	background: #FFE4C2;
-	width: 40%;
+	image-rendering: pixelated;
+	max-height: 520px;
+	height: 80vh;
 }
