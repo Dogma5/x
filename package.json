@@ -4,8 +4,11 @@
 	"description": "Something for a game",
 	"main": "index.js",
 	"scripts": {
+		"build:js": "rollup -c",
+		"build": "npm run build:js",
 		"serve": "browser-sync ./ -f src/js/*.js assets/",
-		"watch": "npm run serve",
+		"watch:js": "onchange src/js/*.js -- npm run build:js",
+		"watch": "npm run build && npm run serve | npm run watch:js",
 		"test": "eslint src/js/*.js"
 	},
 	"repository": {
@@ -36,7 +39,12 @@
 		"url": "https://github.com/Dogma5/x/issues"
 	},
 	"homepage": "https://github.com/Dogma5/x#readme",
-	"dependencies": {},
+	"dependencies": {
+		"onchange": "^4.1.0",
+		"rollup": "^0.65.0",
+		"rollup-plugin-commonjs": "^9.1.6",
+		"rollup-plugin-node-resolve": "^3.3.0"
+	},
 	"devDependencies": {
 		"browser-sync": "^2.24.7"
 	},

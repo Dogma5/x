@@ -1,50 +1,61 @@
-kontra.init();
-
-const tileSize = 16;
-
-// The player character
-let CharacterImage = new Image();
-CharacterImage.src = 'assets/img/character/character.png';
-
-CharacterImage.onload = () => {
-
-	// use kontra.spriteSheet to create animations from an image
-	const Character = kontra.spriteSheet({
-		image: CharacterImage,
-		frameWidth: tileSize,
-		frameHeight: tileSize,
-		animations: {
-			// create a named animation: walk
-			idleLeft: {
-				frames: '0..1',  // frames 0 through 9
-				frameRate: 4,
-			}
-		}
-	});
-
-	const CharacterSprite = kontra.sprite({
-		x: ( kontra.canvas.width / 2 ) - tileSize / 2,
-		y: ( kontra.canvas.height / 2 ) - tileSize / 2,
-
-		// required for an animation sprite
-		animations: Character.animations
-	});
-
-	StartGame( CharacterSprite );
-
-};
+/*
+ *
+ * index.js
+ *
+ * The place where all the magic happens
+ *
+ */
 
 
-const StartGame = ( sprite ) => {
-	const Loop = kontra.gameLoop({
-		update: ( dt ) => {
-			sprite.update();
-		},
-		render: () => {
-			sprite.render();
-		}
-	});
+// Dependencies
+import Kontra   from './kontra';
+import Assets   from './assets';
+import Sprites  from './sprites';
+import SETTINGS from './settings';
 
-	Loop.start();
-}
+
+// Start Kontra
+Kontra.init();
+
+
+// Set the paths to load assets from
+Kontra.assets.imagePath = SETTINGS.get().assetPaths.images;
+
+
+// Load the assets
+Kontra.assets.load( ...Assets )
+	.then( () => {
+
+			// Create the character spritesheet
+			let Character = Kontra.spriteSheet({
+				image: Kontra.assets.images[ 'character' ],
+				frameWidth: SETTINGS.get().tileSize,
+				frameHeight: SETTINGS.get().tileSize,
+
+				// this will also call createAnimations()
+				animations: {}
+			});
+
+
+			// Create the different animations
+			Character.createAnimations( Sprites.character );
+
+
+			// Create a game loop
+			let loop = Kontra.gameLoop({
+				update: () => {
+					Character.animations.idleDown.update();
+				},
+				render: () => {
+					Character.animations.idleDown.render({
+						x: 16, y: 16,
+					});
+				}
+			});
+
+
+			// Start the game loop
+			loop.start();
+	})
+	.catch( error => console.error( error ) );
 

@@ -13,4 +13,5 @@ canvas {
 	image-rendering: pixelated;
 	max-height: 520px;
 	height: 80vh;
+	border-radius: 3px;
 }
