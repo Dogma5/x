@@ -75,6 +75,7 @@ Kontra.assets.load( ...Assets )
 			render: () => {
 				player.render();
 			},
+			fps: SETTINGS.get().framesPerSecond,
 		});
 
 
