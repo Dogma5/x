@@ -19,10 +19,10 @@ const SETTINGS = {
 	 * @type {Object}
 	 */
 	defaults: {
-		tileSize: 16,
-		frameRate: 4,
+		tileSize:   16,
+		frameRate:  4,
 		assetPaths: {
-			images: '/assets/img/'
+			images: '/assets/img/',
 		},
 	},
 
