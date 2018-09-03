@@ -6,7 +6,7 @@
 	"scripts": {
 		"build:js": "rollup -c",
 		"build": "npm run build:js",
-		"serve": "browser-sync ./ -f src/js/*.js assets/",
+		"serve": "browser-sync ./ -f lib/js/*.js assets/ index.html",
 		"watch:js": "onchange src/js/*.js -- npm run build:js",
 		"watch": "npm run build && npm run serve | npm run watch:js",
 		"test": "eslint src/js/*.js"

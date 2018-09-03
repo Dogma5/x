@@ -17,7 +17,7 @@ import SETTINGS from './settings';
  * @type {Object}
  */
 const Sprites = {
-	character: {
+	player: {
 		idleDown: {
 			frames: '0..1',
 			frameRate: SETTINGS.get().frameRate,

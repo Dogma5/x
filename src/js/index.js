@@ -26,30 +26,55 @@ Kontra.assets.imagePath = SETTINGS.get().assetPaths.images;
 Kontra.assets.load( ...Assets )
 	.then( () => {
 
-			// Create the character spritesheet
-			let Character = Kontra.spriteSheet({
-				image: Kontra.assets.images[ 'character' ],
+			// Create the player spritesheet
+			const playerSpriteSheet = Kontra.spriteSheet({
+				image: Kontra.assets.images[ 'player' ],
 				frameWidth: SETTINGS.get().tileSize,
 				frameHeight: SETTINGS.get().tileSize,
 
 				// this will also call createAnimations()
-				animations: {}
+				animations: Sprites.player
+			});
+
+			const player = Kontra.sprite({
+				x: 32,
+				y: 32,
+				animations: playerSpriteSheet.animations,
 			});
 
 
-			// Create the different animations
-			Character.createAnimations( Sprites.character );
+			Kontra.keys.bind( 'up', () => {
+				player.playAnimation( 'walkUp' );
+				player.dy = -1;
+				player.dx = 0;
+			});
 
+			Kontra.keys.bind( 'down', () => {
+				player.playAnimation( 'walkDown' );
+				player.dy = 1;
+				player.dx = 0;
+			});
+
+
+			Kontra.keys.bind( 'left', () => {
+				player.playAnimation( 'walkLeft' );
+				player.dx = -1;
+				player.dy = 0;
+			});
+
+			Kontra.keys.bind( 'right', () => {
+				player.playAnimation( 'walkRight' );
+				player.dx = 1;
+				player.dy = 0;
+			});
 
 			// Create a game loop
 			let loop = Kontra.gameLoop({
 				update: () => {
-					Character.animations.idleDown.update();
+					player.update();
 				},
 				render: () => {
-					Character.animations.idleDown.render({
-						x: 16, y: 16,
-					});
+					player.render();
 				}
 			});
 

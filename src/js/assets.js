@@ -13,7 +13,7 @@
  * @type {Array}
  */
 const Assets = [
-	'character.png',
+	'player.png',
 ];
 
 export default Assets;
