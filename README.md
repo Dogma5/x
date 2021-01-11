@@ -12,3 +12,11 @@ ABANDONING SHIP
 
 ///////////////////////
 ```
+
+# x
+
+> A game built by @alex-page and @treb
+
+## Get started
+
+To play the game go to [url]
