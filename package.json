@@ -11,7 +11,7 @@
 	"scripts": {
 		"start": "snowpack dev",
 		"build": "snowpack build --out=_site",
-		"test": "xo --env=browser && ava"
+		"test": "xo --env=browser"
 	},
 	"devDependencies": {
 		"ava": "^3.15.0",
