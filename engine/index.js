@@ -34,7 +34,9 @@ const btn = {
 };
 
 const updatePressed = (eventCode, isPressed) => {
-	if (eventCode in btn) btn[eventCode] = isPressed;
+	if (eventCode in btn) {
+		btn[eventCode] = isPressed;
+	}
 };
 
 function gameLoop(update, draw) {

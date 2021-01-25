@@ -10,8 +10,8 @@
 	},
 	"scripts": {
 		"start": "snowpack dev",
-		"build": "snowpack build",
-		"test": "xo && ava"
+		"build": "snowpack build --out=_site",
+		"test": "xo --env=browser && ava"
 	},
 	"devDependencies": {
 		"ava": "^3.15.0",
@@ -42,8 +42,5 @@
 	"bugs": {
 		"url": "https://github.com/Dogma5/x/issues"
 	},
-	"homepage": "https://github.com/Dogma5/x#readme",
-	"xo": {
-		"env": "browser"
-	}
+	"homepage": "https://github.com/Dogma5/x#readme"
 }
