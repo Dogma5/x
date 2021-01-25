@@ -1,19 +1,61 @@
-import {init, update, draw, clearScreen} from '../engine/index.js';
+import {
+	engine,
+	clearScreen,
+	btn,
+	setSprite,
+	createSprite
+} from '../engine/index.js';
 
-const options = {};
+const gameWidth = 200;
+const gameHeight = 120;
 
-let x = 100;
-let y = 100;
+import playerSprite from './player.png';
 
-clearScreen();
+let spriteIndex = 0;
+let isSpriteSwap = false;
+let isButtonDown = false;
+const playerSize = 16;
+const player = createSprite(playerSprite, playerSize, playerSize);
 
-init(options);
+let playerX = (gameWidth / 2) - (playerSize / 2);
+let playerY = (gameHeight / 2) - (playerSize / 2);
 
-update(() => {
-	x += 1;
-	y += 1;
-});
+function draw() {
+	clearScreen();
+	const currentSprite = spriteIndex + (isButtonDown ? 2 : 0) + (isSpriteSwap ? 1 : 0);
+	setSprite(playerX, playerY, player, currentSprite);
+}
 
-draw(() => {
+let frameCount = 0;
+function update() {
+	// Every 15 frames toggle the idle frame
+	frameCount++;
+	if (frameCount > 15) {
+		frameCount = 0;
+		isSpriteSwap = !isSpriteSwap;
+	}
 
-});
+	isButtonDown = btn.ArrowUp || btn.ArrowRight || btn.ArrowDown || btn.ArrowLeft;
+
+	if (btn.ArrowUp) {
+		playerY -= 1;
+		spriteIndex = 9;
+	}
+
+	if (btn.ArrowRight) {
+		playerX += 1;
+		spriteIndex = 18;
+	}
+
+	if (btn.ArrowDown) {
+		playerY += 1;
+		spriteIndex = 0;
+	}
+
+	if (btn.ArrowLeft) {
+		playerX -= 1;
+		spriteIndex = 27;
+	}
+}
+
+engine({width: gameWidth, height: gameHeight}, update, draw);
