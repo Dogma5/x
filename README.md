@@ -19,4 +19,4 @@ ABANDONING SHIP
 
 ## Get started
 
-To play the game go to [url]
+To play the game go to http://dogma5.com/x/
