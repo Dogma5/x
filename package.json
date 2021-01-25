@@ -1,0 +1,46 @@
+{
+	"name": "x",
+	"private": "true",
+	"version": "0.0.0",
+	"license": "GPL-3.0",
+	"description": "A game built by @alex-page and @treb",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Dogma5/x.git"
+	},
+	"scripts": {
+		"start": "snowpack dev",
+		"build": "snowpack build --out=_site",
+		"test": "xo --env=browser && ava"
+	},
+	"devDependencies": {
+		"ava": "^3.15.0",
+		"snowpack": "^2.18.5",
+		"xo": "^0.37.1"
+	},
+	"keywords": [
+		"game",
+		"rpg",
+		"engine"
+	],
+	"author": {
+		"name": "Dogma5",
+		"url": "https://github.com/dogma5"
+	},
+	"contributors": [
+		{
+			"name": "Alex Page",
+			"email": "alex@alexpage.com.au",
+			"url": "https://alexpage.com.au"
+		},
+		{
+			"name": "Trevor Brennan",
+			"email": "t@trevorbrennan.com",
+			"url": "https://github.com/TrebBrennan"
+		}
+	],
+	"bugs": {
+		"url": "https://github.com/Dogma5/x/issues"
+	},
+	"homepage": "https://github.com/Dogma5/x#readme"
+}
