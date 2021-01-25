@@ -9,7 +9,7 @@ import {
 const gameWidth = 200;
 const gameHeight = 120;
 
-import playerSprite from './player.png';
+import playerSprite from './player.png.proxy.js';
 
 let spriteIndex = 0;
 let isSpriteSwap = false;
