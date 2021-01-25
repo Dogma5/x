@@ -10,7 +10,7 @@
 	},
 	"scripts": {
 		"start": "snowpack dev",
-		"build": "snowpack build --out='_site'",
+		"build": "snowpack build --out='_site' --baseUrl=x",
 		"test": "xo --env=browser"
 	},
 	"devDependencies": {
