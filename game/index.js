@@ -3,6 +3,7 @@ import {
 	clearScreen,
 	btn,
 	setSprite,
+	setMap,
 	createSprite
 } from '../engine/index.js';
 
@@ -23,6 +24,7 @@ let playerY = (gameHeight / 2) - (playerSize / 2);
 function draw() {
 	clearScreen();
 	const currentSprite = spriteIndex + (isButtonDown ? 2 : 0) + (isSpriteSwap ? 1 : 0);
+	setMap(0, 0, '#FAD199');
 	setSprite(playerX, playerY, player, currentSprite);
 }
 
@@ -58,4 +60,4 @@ function update() {
 	}
 }
 
-engine({width: gameWidth, height: gameHeight}, update, draw);
+engine({width: gameWidth, height: gameHeight, background: '#FAD199'}, update, draw);

@@ -1,9 +1,17 @@
 const canvas = document.createElement('canvas');
-const context = canvas.getContext('2d', {alpha: false});
+const context = canvas.getContext('2d', {
+	desynchronized: true,
+	alpha: false
+});
 
 function setPixel(x, y, color) {
 	context.fillStyle = color;
 	context.fillRect(x, y, 1, 1);
+}
+
+function setMap(x, y, backgroundColor) {
+	context.fillStyle = backgroundColor;
+	context.fillRect(x, y, canvas.width, canvas.height);
 }
 
 function createSprite(path, width, height) {
@@ -51,15 +59,16 @@ function engine(options, update, draw) {
 	const {
 		width = 800,
 		height = 600,
-		responsive = false,
+		responsive = true,
 		pageBackground = '#000',
-		id = 'game'
+		id = 'game',
+		background
 	} = options;
 
 	canvas.id = id;
 	canvas.width = width;
 	canvas.height = height;
-	canvas.style.border = '4px solid #111';
+	canvas.style.background = background;
 
 	canvas.style.imageRendering = 'crisp-edges';
 	canvas.style.imageRendering = 'pixelated';
@@ -69,6 +78,7 @@ function engine(options, update, draw) {
 	if (responsive) {
 		canvas.style.maxWidth = '100%';
 		canvas.style.maxHeight = '100%';
+		canvas.style.height = 'auto';
 	}
 
 	document.body.style.background = pageBackground;
@@ -86,5 +96,6 @@ export {
 	clearScreen,
 	setPixel,
 	setSprite,
+	setMap,
 	createSprite
 };
