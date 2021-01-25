@@ -1,1 +1,1 @@
-export default "/game/player.png";
+export default "game/player.png";
