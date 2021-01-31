@@ -1,101 +1,143 @@
-const canvas = document.createElement('canvas');
-const context = canvas.getContext('2d', {
-	desynchronized: true,
-	alpha: false
-});
-
-function setPixel(x, y, color) {
-	context.fillStyle = color;
-	context.fillRect(x, y, 1, 1);
-}
-
-function setMap(x, y, backgroundColor) {
-	context.fillStyle = backgroundColor;
-	context.fillRect(x, y, canvas.width, canvas.height);
-}
-
-function createSprite(path, width, height) {
-	const img = new Image();
-	img.src = path;
-	return {img, width, height};
-}
-
-function setSprite(x, y, sprite, spriteIndex) {
-	const {img, width, height} = sprite;
-	const cropX = ((spriteIndex * width) % img.width);
-	const cropY = Math.trunc(spriteIndex * width / img.width) * height;
-	context.drawImage(img, cropX, cropY, width, height, x, y, width, height);
-}
-
-function clearScreen() {
-	context.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-const btn = {
-	ArrowUp: false,
-	ArrowLeft: false,
-	ArrowDown: false,
-	ArrowRight: false,
-	Space: false,
-	Enter: false,
-	Escape: false
+const xe = {
+	assets: {},
+	sprites: {},
+	maps: {},
+	canvas: document.createElement('canvas'),
+	canvasScale: 4,
+	btn: {
+		ArrowUp: false,
+		ArrowLeft: false,
+		ArrowDown: false,
+		ArrowRight: false,
+		Space: false,
+		Enter: false,
+		Escape: false
+	},
+	gameWidth: 176,
+	gameHeight: 112,
+	draw: () => {},
+	update: () => {}
 };
 
-const updatePressed = (eventCode, isPressed) => {
-	if (eventCode in btn) {
-		btn[eventCode] = isPressed;
-	}
-};
-
-function gameLoop(update, draw) {
+xe.gameLoop = () => {
 	requestAnimationFrame(() => {
-		update();
-		draw();
-		gameLoop(update, draw);
+		xe.update();
+		xe.draw();
+		xe.gameLoop();
 	});
-}
+};
 
-function engine(options, update, draw) {
+xe.clearScreen = () => {
+	const canvasHeight = xe.gameHeight * xe.canvasScale;
+	const canvasWidth = xe.gameWidth * xe.canvasScale;
+	xe.context.clearRect(0, 0, canvasHeight, canvasWidth);
+};
+
+xe.setPixel = (x, y, color) => {
+	xe.context.fillStyle = color;
+	xe.context.fillRect(x, y, 1, 1);
+};
+
+xe.setSprite = (x, y, sprite) => {
+	const {img, cropX, cropY, width, height} = sprite;
+	xe.context.drawImage(img, cropX, cropY, width, height, x, y, width, height);
+};
+
+xe.setMap = (x, y, spriteArray, sprite) => {
+	spriteArray.forEach((spriteIndex, index) => {
+		const {img, cropX, cropY, width, height} = sprite[spriteIndex];
+		let newX = (x + (width * index)) % xe.gameWidth;
+		let newY = Math.trunc(index * width / xe.gameWidth) * height;
+		xe.context.drawImage(img, cropX, cropY, width, height, newX, newY, width, height);
+	});
+};
+
+xe.setup = options => {
 	const {
-		width = 800,
-		height = 600,
+		gameWidth,
+		gameHeight,
+		canvasScale,
 		responsive = true,
-		pageBackground = '#000',
-		id = 'game',
-		background
+		pageBackground = '#111',
+		id = 'game'
 	} = options;
+	xe.gameWidth = gameWidth || xe.gameWidth;
+	xe.gameHeight = gameHeight || xe.gameHeight;
+	xe.canvasScale = canvasScale || xe.canvasScale;
 
-	canvas.id = id;
-	canvas.width = width;
-	canvas.height = height;
-	canvas.style.background = background;
+	xe.canvas.id = id;
+	xe.canvas.width = xe.gameWidth;
+	xe.canvas.height = xe.gameHeight;
 
-	canvas.style.imageRendering = 'crisp-edges';
-	canvas.style.imageRendering = 'pixelated';
-	canvas.style.width = `${width * 4}px`;
-	canvas.style.height = `${height * 4}px`;
+	xe.canvas.style.imageRendering = 'crisp-edges';
+	xe.canvas.style.imageRendering = 'pixelated';
+	xe.canvas.style.width = `${xe.gameWidth * xe.canvasScale}px`;
+	xe.canvas.style.height = `${xe.gameHeight * xe.canvasScale}px`;
 
 	if (responsive) {
-		canvas.style.maxWidth = '100%';
-		canvas.style.maxHeight = '100%';
-		canvas.style.height = 'auto';
+		xe.canvas.style.maxWidth = '100%';
+		xe.canvas.style.maxHeight = '100%';
+		xe.canvas.style.height = 'auto';
 	}
 
 	document.body.style.background = pageBackground;
-	document.body.append(canvas);
+	document.body.append(xe.canvas);
+
+	xe.context = xe.canvas.getContext('2d', {
+		desynchronized: true,
+		alpha: false
+	});
+
+	const updatePressed = (eventCode, isPressed) => {
+		if (eventCode in xe.btn) {
+			xe.btn[eventCode] = isPressed;
+		}
+	};
 
 	document.addEventListener('keydown', event => updatePressed(event.code, true));
 	document.addEventListener('keyup', event => updatePressed(event.code, false));
-
-	gameLoop(update, draw);
-}
-
-export {
-	engine,
-	btn,
-	clearScreen,
-	setPixel,
-	setSprite,
-	setMap,
-	createSprite
 };
+
+const getAssetName = assetPath => {
+	return assetPath.split('.')[0].split('/').slice(-1)[0];
+};
+
+const loadImage = async imagePath => {
+	try {
+		const img = new Image();
+		img.src = imagePath;
+		await img.decode();
+		const imageName = getAssetName(imagePath);
+		xe.assets[imageName] = img;
+		return imageName;
+	} catch (error) {
+		console.error(`Failed to load '${imagePath}'\n${error.message}`);
+	}
+};
+
+xe.loadAssets = async assets => {
+	const loadImages = assets.map(asset => loadImage(asset));
+	const assetNames = await Promise.all(loadImages);
+	return assetNames;
+};
+
+xe.loadSprites = async (sprite, width, height) => {
+	const spriteName = await loadImage(sprite);
+	const asset = xe.assets[spriteName];
+	const assetWidth = asset.width;
+	const assetHeight = asset.height;
+	const totalSprites = assetWidth / width * assetHeight / height;
+
+	xe.sprites[spriteName] = [];
+	for (let i = 0; i < totalSprites; i++) {
+		xe.sprites[spriteName].push({
+			img: xe.assets[spriteName],
+			width,
+			height,
+			cropX: ((i * width) % assetWidth),
+			cropY: Math.trunc(i * width / assetWidth) * height
+		});
+	}
+};
+
+export default xe;
