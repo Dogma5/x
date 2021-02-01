@@ -8,13 +8,19 @@ const spriteSize = 16;
 let currentAnimationDelay = animationDelay;
 let currentPlayerSprite = 0;
 let isSpriteSwap = false;
+let playerXFlipped = false;
 let playerX = (gameWidth / 2) - (spriteSize / 2);
 let playerY = (gameHeight / 2) - (spriteSize / 2);
 
 xe.draw = () => {
 	xe.clearScreen();
 	xe.setMap(0, 0, dungeonMap, xe.sprites.dungeon);
-	xe.setSprite(playerX, playerY, xe.sprites.player[currentPlayerSprite]);
+	xe.setSprite({
+		x: playerX,
+		y: playerY,
+		sprite: xe.sprites.player[currentPlayerSprite],
+		xFlipped: playerXFlipped
+	});
 };
 
 xe.update = () => {
@@ -23,6 +29,7 @@ xe.update = () => {
 	let xSpeed = 0;
 	let ySpeed = 0;
 
+	playerXFlipped = false;
 	currentPlayerSprite = 0;
 	currentAnimationDelay -= 1;
 	if (currentAnimationDelay < 0) {
@@ -47,7 +54,8 @@ xe.update = () => {
 
 	if (ArrowLeft) {
 		xSpeed = -1;
-		currentPlayerSprite = 27;
+		currentPlayerSprite = 18;
+		playerXFlipped = true;
 	}
 
 	currentPlayerSprite = currentPlayerSprite + (isMoving ? 2 : 0) + (isSpriteSwap ? 1 : 0);

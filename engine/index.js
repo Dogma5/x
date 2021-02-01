@@ -38,17 +38,51 @@ xe.setPixel = (x, y, color) => {
 	xe.context.fillRect(x, y, 1, 1);
 };
 
-xe.setSprite = (x, y, sprite) => {
+xe.setSprite = ({x, y, sprite, xFlipped, yFlipped, rotation}) => {
 	const {img, cropX, cropY, width, height} = sprite;
-	xe.context.drawImage(img, cropX, cropY, width, height, x, y, width, height);
+	xe.context.save();
+
+	const xTransform = xFlipped ? -1 : 1;
+	const yTransform = yFlipped ? -1 : 1;
+	if (xFlipped || yFlipped) {
+		xe.context.translate(width, 0);
+		xe.context.scale(xTransform, yTransform);
+	}
+
+	xe.context.drawImage(
+		img,
+		cropX,
+		cropY,
+		width,
+		height,
+		x * xTransform,
+		y * yTransform,
+		width,
+		height
+	);
+	xe.context.restore();
 };
 
-xe.setMap = (x, y, spriteArray, sprite) => {
-	spriteArray.forEach((spriteIndex, index) => {
-		const {img, cropX, cropY, width, height} = sprite[spriteIndex];
-		let newX = (x + (width * index)) % xe.gameWidth;
-		let newY = Math.trunc(index * width / xe.gameWidth) * height;
-		xe.context.drawImage(img, cropX, cropY, width, height, newX, newY, width, height);
+xe.setMap = (x, y, mapArray, sprite) => {
+	mapArray.forEach((mapSprite, index) => {
+		const [
+			spriteIndex,
+			xFlipped = false,
+			yFlipped = false
+		] = typeof mapSprite === 'number' ?
+			[mapSprite] :
+			mapSprite;
+		const {width, height} = sprite[spriteIndex];
+		const newX = (x + (width * index)) % xe.gameWidth;
+		const newY = y + (Math.trunc(index * width / xe.gameWidth) * height);
+
+		xe.setSprite({
+			x: newX,
+			y: newY,
+			sprite: sprite[spriteIndex],
+			xFlipped,
+			yFlipped
+		});
 	});
 };
 
@@ -121,7 +155,7 @@ xe.loadAssets = async assets => {
 	return assetNames;
 };
 
-xe.loadSprites = async (sprite, width, height) => {
+xe.loadSprites = async (sprite, width, height, flags) => {
 	const spriteName = await loadImage(sprite);
 	const asset = xe.assets[spriteName];
 	const assetWidth = asset.width;
@@ -130,13 +164,21 @@ xe.loadSprites = async (sprite, width, height) => {
 
 	xe.sprites[spriteName] = [];
 	for (let i = 0; i < totalSprites; i++) {
+
 		xe.sprites[spriteName].push({
 			img: xe.assets[spriteName],
 			width,
 			height,
 			cropX: ((i * width) % assetWidth),
-			cropY: Math.trunc(i * width / assetWidth) * height
+			cropY: Math.trunc(i * width / assetWidth) * height,
+			flags: []
 		});
+
+		for (const [key, value] of Object.entries(flags)) {
+			if (value.includes(i)) {
+				xe.sprites[spriteName][i].flags.push(key);
+			}
+		}
 	}
 };
 
