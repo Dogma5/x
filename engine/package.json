@@ -1,0 +1,12 @@
+{
+	"name": "@x/engine",
+	"version": "0.0.0",
+	"private": "true",
+	"description": "The game engine",
+	"scripts": {
+		"lint": "xo --env=browser"
+	},
+	"devDependencies": {
+		"xo": "^0.38.1"
+	}
+}

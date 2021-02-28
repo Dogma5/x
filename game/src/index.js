@@ -1,5 +1,5 @@
-import xe from '../engine/index.js';
-import {dungeonMap} from './maps.js';
+import xe from '@x/engine';
+import {dungeonMap} from './maps/index.js';
 
 const {gameWidth, gameHeight} = xe;
 const animationDelay = 15;

@@ -1,8 +1,8 @@
-import xe from '../engine/index.js';
+import xe from '@x/engine';
 
-import playerImagePath from './sprites/player.png';
-import dungeonImagePath from './sprites/dungeon.png';
-import {startGame} from './start-game.js';
+import playerImagePath from './src/sprites/player.png';
+import dungeonImagePath from './src/sprites/dungeon.png';
+import {startGame} from './src/index.js';
 
 (async () => {
 	const options = {};

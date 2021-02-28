@@ -1,0 +1,21 @@
+name: Test, build and deploy
+
+on: push
+
+jobs:
+  test_build_deploy:
+    name: 'Test, build and deploy'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
+      - run: yarn
+      - run: yarn lint
+      - run: echo github
+      - if: ${{ github.GITHUB_REPOSITORY }} == 'main'
+        run: yarn build
+      - if: ${{ github.GITHUB_REPOSITORY }} == 'main'
+        name: Deploy site to gh-pages branch
+        uses: alex-page/blazing-fast-gh-pages-deploy@main
+        with:
+          repo-token: ${{ secrets.GH_PAT }}

@@ -38,7 +38,8 @@ xe.setPixel = (x, y, color) => {
 	xe.context.fillRect(x, y, 1, 1);
 };
 
-xe.setSprite = ({x, y, sprite, xFlipped, yFlipped, rotation}) => {
+// Add rotation
+xe.setSprite = ({x, y, sprite, xFlipped, yFlipped}) => {
 	const {img, cropX, cropY, width, height} = sprite;
 	xe.context.save();
 
@@ -60,11 +61,13 @@ xe.setSprite = ({x, y, sprite, xFlipped, yFlipped, rotation}) => {
 		width,
 		height
 	);
+
 	xe.context.restore();
 };
 
 xe.setMap = (x, y, mapArray, sprite) => {
-	mapArray.forEach((mapSprite, index) => {
+	let index = 0;
+	for (const mapSprite of mapArray) {
 		const [
 			spriteIndex,
 			xFlipped = false,
@@ -75,6 +78,7 @@ xe.setMap = (x, y, mapArray, sprite) => {
 		const {width, height} = sprite[spriteIndex];
 		const newX = (x + (width * index)) % xe.gameWidth;
 		const newY = y + (Math.trunc(index * width / xe.gameWidth) * height);
+		index += 1;
 
 		xe.setSprite({
 			x: newX,
@@ -83,7 +87,7 @@ xe.setMap = (x, y, mapArray, sprite) => {
 			xFlipped,
 			yFlipped
 		});
-	});
+	}
 };
 
 xe.setup = options => {
@@ -164,7 +168,6 @@ xe.loadSprites = async (sprite, width, height, flags) => {
 
 	xe.sprites[spriteName] = [];
 	for (let i = 0; i < totalSprites; i++) {
-
 		xe.sprites[spriteName].push({
 			img: xe.assets[spriteName],
 			width,

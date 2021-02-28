@@ -1,0 +1,18 @@
+{
+	"name": "@x/game",
+	"version": "0.0.0",
+	"private": "true",
+	"description": "The game logic and site",
+	"scripts": {
+		"start": "snowpack dev --reload",
+		"build": "snowpack build --out=../_site --baseUrl=/x",
+		"lint": "xo --env=browser"
+	},
+	"dependencies": {
+		"@x/engine": "0.0.0",
+		"snowpack": "^3.1.0-pre.8"
+	},
+	"devDependencies": {
+		"xo": "^0.38.1"
+	}
+}

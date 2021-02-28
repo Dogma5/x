@@ -1,22 +1,26 @@
 {
 	"name": "x",
-	"private": "true",
-	"version": "0.0.0",
-	"license": "GPL-3.0",
 	"description": "A game built by @alex-page and @treb",
+	"license": "GPL-3.0",
+	"private": true,
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Dogma5/x.git"
 	},
 	"scripts": {
-		"start": "snowpack dev",
-		"build": "snowpack build --out='_site' --baseUrl=x",
-		"test": "xo --env=browser"
+		"lint": "yarn workspaces run lint",
+		"start": "yarn workspace @x/game start",
+		"build": "yarn workspace @x/game build"
 	},
-	"devDependencies": {
-		"ava": "^3.15.0",
-		"snowpack": "^2.18.5",
-		"xo": "^0.37.1"
+	"workspaces": [
+		"engine",
+		"game"
+	],
+	"dependencies": {
+		"xo": "^0.38.1"
+	},
+	"xo": {
+		"env": "browser"
 	},
 	"keywords": [
 		"game",
