@@ -1,1 +1,1 @@
-export default "/src/sprites/player.png";
+export default "/x/src/sprites/player.png";
