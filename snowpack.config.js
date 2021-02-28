@@ -5,6 +5,6 @@
 module.exports = {
 	workspaceRoot: '../../',
 	buildOptions: {
-		metaUrlPath: 'snowpack'
+		metaUrlPath: 'snowpack' // GitHub Pages ignores _snowpack
 	}
 };
