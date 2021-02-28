@@ -1,4 +1,4 @@
-import xe from './_snowpack/link/x/engine/index.js';
+import xe from './snowpack/link/x/engine/index.js';
 
 import playerImagePath from './src/sprites/player.png.proxy.js';
 import dungeonImagePath from './src/sprites/dungeon.png.proxy.js';

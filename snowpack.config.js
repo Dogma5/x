@@ -3,5 +3,8 @@
 
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
-	workspaceRoot: '../../'
+	workspaceRoot: '../../',
+	buildOptions: {
+		metaUrlPath: 'snowpack'
+	}
 };

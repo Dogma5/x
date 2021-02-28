@@ -1,4 +1,4 @@
-import xe from '../_snowpack/link/x/engine/index.js';
+import xe from '../snowpack/link/x/engine/index.js';
 import {dungeonMap} from './maps/index.js';
 
 const {gameWidth, gameHeight} = xe;
