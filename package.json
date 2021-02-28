@@ -5,7 +5,7 @@
 	"description": "The game logic and site",
 	"scripts": {
 		"start": "snowpack dev --reload",
-		"build": "snowpack build --out=../_site --baseUrl=x",
+		"build": "snowpack build --out=../_site",
 		"lint": "xo --env=browser"
 	},
 	"dependencies": {

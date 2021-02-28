@@ -1,1 +1,1 @@
-export default "x/src/sprites/dungeon.png";
+export default "/src/sprites/dungeon.png";
