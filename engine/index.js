@@ -1,7 +1,7 @@
 const xe = {
 	assets: {},
-	sprites: {},
 	maps: {},
+	currentMap: null,
 	canvas: document.createElement('canvas'),
 	canvasScale: 4,
 	btn: {
@@ -38,9 +38,14 @@ xe.setPixel = (x, y, color) => {
 	xe.context.fillRect(x, y, 1, 1);
 };
 
-// Add rotation
-xe.setSprite = ({x, y, sprite, xFlipped, yFlipped}) => {
-	const {img, cropX, cropY, width, height} = sprite;
+xe.mapGet = (x, y) => {
+	// Return currentMap[x][y];
+	return 'a';
+};
+
+// To do, add rotation
+xe.setSprite = ({id, sprite, x, y, xFlipped, yFlipped}) => {
+	const {cropX, cropY, width, height} = sprite;
 	xe.context.save();
 
 	const xTransform = xFlipped ? -1 : 1;
@@ -51,7 +56,7 @@ xe.setSprite = ({x, y, sprite, xFlipped, yFlipped}) => {
 	}
 
 	xe.context.drawImage(
-		img,
+		xe.assets[id].image,
 		cropX,
 		cropY,
 		width,
@@ -65,28 +70,32 @@ xe.setSprite = ({x, y, sprite, xFlipped, yFlipped}) => {
 	xe.context.restore();
 };
 
-xe.setMap = (x, y, mapArray, sprite) => {
-	let index = 0;
-	for (const mapSprite of mapArray) {
-		const [
-			spriteIndex,
-			xFlipped = false,
-			yFlipped = false
-		] = typeof mapSprite === 'number' ?
-			[mapSprite] :
-			mapSprite;
-		const {width, height} = sprite[spriteIndex];
-		const newX = (x + (width * index)) % xe.gameWidth;
-		const newY = y + (Math.trunc(index * width / xe.gameWidth) * height);
-		index += 1;
+/**
+ * Set the map on the canvas
+ *
+ * @param {number} x - X location to start rendering the map
+ * @param {number} y - Y location to start rendering the map
+ * @param {String} mapKey - The map
+ */
+xe.setMap = (x, y, mapKey) => {
+	for (const [column, columnTiles] of xe.maps[mapKey].tiles.entries()) {
+		for (const [row, tile] of columnTiles.entries()) {
+			const [
+				tileIndex,
+				xFlipped = false,
+				yFlipped = false
+			] = typeof tile === 'number' ? [tile] : tile;
+			const sprite = xe.assets[xe.maps[mapKey].asset].sprites[tileIndex];
 
-		xe.setSprite({
-			x: newX,
-			y: newY,
-			sprite: sprite[spriteIndex],
-			xFlipped,
-			yFlipped
-		});
+			xe.setSprite({
+				id: mapKey,
+				x: (row * sprite.height) + x,
+				y: (column * sprite.width) + y,
+				sprite,
+				xFlipped,
+				yFlipped
+			});
+		}
 	}
 };
 
@@ -136,51 +145,56 @@ xe.setup = options => {
 	document.addEventListener('keyup', event => updatePressed(event.code, false));
 };
 
-const getAssetName = assetPath => {
-	return assetPath.split('.')[0].split('/').slice(-1)[0];
-};
-
 const loadImage = async imagePath => {
 	try {
-		const img = new Image();
-		img.src = imagePath;
-		await img.decode();
-		const imageName = getAssetName(imagePath);
-		xe.assets[imageName] = img;
-		return imageName;
+		const image = new Image();
+		image.src = imagePath;
+		await image.decode();
+		return image;
 	} catch (error) {
 		console.error(`Failed to load '${imagePath}'\n${error.message}`);
 	}
 };
 
-xe.loadAssets = async assets => {
-	const loadImages = assets.map(asset => loadImage(asset));
-	const assetNames = await Promise.all(loadImages);
-	return assetNames;
+const getFlags = (flags, row, column) => {
+	const foundFlags = [];
+	for (const flagTile of Object.keys(flags)) {
+		const [flagRow, flagColumn] = flagTile.split('-');
+		if (row === Number(flagRow) && column === Number(flagColumn)) {
+			foundFlags.push(...flags[flagTile]);
+		}
+	}
+
+	return foundFlags;
 };
 
-xe.loadSprites = async (sprite, width, height, flags) => {
-	const spriteName = await loadImage(sprite);
-	const asset = xe.assets[spriteName];
-	const assetWidth = asset.width;
-	const assetHeight = asset.height;
-	const totalSprites = assetWidth / width * assetHeight / height;
+/**
+ * Load the sprite into memory
+ *
+ * @param {string} spritePath - The current sprite image
+ * @param {number} width - The width of each sprite
+ * @param {number} height - The height of each sprite
+ * @param {array} flags - The flags for each sprite
+ */
+xe.loadSprite = async ({id, path, spriteWidth, spriteHeight, flags}) => {
+	const image = await loadImage(path);
+	const imageWidth = image.width;
+	const imageHeight = image.height;
 
-	xe.sprites[spriteName] = [];
-	for (let i = 0; i < totalSprites; i++) {
-		xe.sprites[spriteName].push({
-			img: xe.assets[spriteName],
-			width,
-			height,
-			cropX: ((i * width) % assetWidth),
-			cropY: Math.trunc(i * width / assetWidth) * height,
-			flags: []
-		});
+	xe.assets[id] = {
+		image,
+		width: spriteWidth,
+		height: spriteHeight,
+		sprites: []
+	};
 
-		for (const [key, value] of Object.entries(flags)) {
-			if (value.includes(i)) {
-				xe.sprites[spriteName][i].flags.push(key);
-			}
+	for (let column = 0; column < (imageWidth / spriteWidth); column++) {
+		for (let row = 0; row < (imageHeight / spriteHeight); row++) {
+			xe.assets[id].sprites.push({
+				cropX: (column * spriteWidth) % imageWidth,
+				cropY: (row * spriteHeight) % imageHeight,
+				flags: getFlags(flags, row, column)
+			});
 		}
 	}
 };
