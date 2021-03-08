@@ -1,0 +1,1 @@
+export default "/x/assets/player.png";

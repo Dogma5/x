@@ -1,15 +1,17 @@
 import xe from './snowpack/link/x/engine/index.js';
 
-import playerImagePath from './src/sprites/player.png.proxy.js';
-import dungeonImagePath from './src/sprites/dungeon.png.proxy.js';
-import {startGame} from './src/index.js';
+import assets from './src/assets.js';
+import maps from './src/maps.js';
+import {draw, update} from './src/render.js';
 
 (async () => {
-	const options = {};
-	xe.setup(options);
-	await xe.loadSprites(playerImagePath, 16, 16, {});
-	await xe.loadSprites(dungeonImagePath, 16, 16, {
-		collide: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-	});
-	startGame();
+	xe.setup();
+	xe.assets = await xe.loadAssets(assets);
+	xe.maps = maps;
+	xe.currentMap = 'dungeon';
+
+	xe.draw = () => draw();
+	xe.update = () => update();
+
+	xe.gameLoop();
 })();

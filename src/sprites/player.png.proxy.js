@@ -1,1 +1,0 @@
-export default "/x/src/sprites/player.png";
