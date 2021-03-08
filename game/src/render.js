@@ -1,9 +1,11 @@
 import xe from '@x/engine';
+import collision from './collision.js';
 
 const {gameWidth, gameHeight} = xe;
 const animationDelay = 15;
 const spriteSize = 16;
 
+const currentMap = 'dungeon';
 let currentAnimationDelay = animationDelay;
 let currentPlayerSprite = 0;
 let isSpriteSwap = false;
@@ -11,21 +13,8 @@ let playerXFlipped = false;
 let playerX = (gameWidth / 2) - (spriteSize / 2);
 let playerY = (gameHeight / 2) - (spriteSize / 2);
 const characterSpeed = 1;
-const currentMap = 'dungeon';
 
-xe.draw = () => {
-	xe.clearScreen();
-	xe.setMap(0, 0, currentMap);
-	xe.setSprite({
-		id: 'player',
-		x: playerX,
-		y: playerY,
-		sprite: xe.assets.player.sprites[currentPlayerSprite],
-		xFlipped: playerXFlipped
-	});
-};
-
-xe.update = () => {
+export const update = () => {
 	const {ArrowUp, ArrowRight, ArrowDown, ArrowLeft} = xe.btn;
 	const isMoving = ArrowUp || ArrowRight || ArrowDown || ArrowLeft;
 	let xSpeed = 0;
@@ -60,23 +49,23 @@ xe.update = () => {
 		playerXFlipped = true;
 	}
 
-	const newPlayerX = playerX + xSpeed;
-	const newPlayerY = playerY + ySpeed;
-	playerX = between(newPlayerX, 0, gameWidth - spriteSize) ? newPlayerX : playerX;
-	playerY = between(newPlayerY, 0, gameHeight - spriteSize) ? newPlayerY : playerY;
+	const xCollision = collision(playerX + xSpeed, playerY, spriteSize, spriteSize);
+	const yCollision = collision(playerX, playerY + ySpeed, spriteSize, spriteSize);
 
-	// Const mapTile = xe.mapGet(newPlayerX, newPlayerY);
+	playerX += xCollision ? 0 : xSpeed;
+	playerY += yCollision ? 0 : ySpeed;
 
-	// Update sprite
 	currentPlayerSprite = currentPlayerSprite + (isMoving ? 2 : 0) + (isSpriteSwap ? 1 : 0);
 };
 
-function between(value, min, max) {
-	return value >= min && value <= max;
-}
-
-function startGame() {
-	xe.gameLoop();
-}
-
-export {startGame};
+export const draw = () => {
+	xe.clearScreen();
+	xe.setMap(0, 0, currentMap);
+	xe.setSprite({
+		id: 'player',
+		x: playerX,
+		y: playerY,
+		sprite: xe.assets.player.sprites[currentPlayerSprite],
+		xFlipped: playerXFlipped
+	});
+};

@@ -1,4 +1,4 @@
-const dungeonMap = [
+const dungeonTiles = [
 	[[12, true], 9, 10, 11, 9, 10, 11, 9, 10, 11, 12],
 	[[13, true], 1, 1, 1, 3, 2, 2, 1, 1, 0, 13],
 	[[22, true], 1, 0, 1, 2, 3, 3, 1, 1, 1, 22],
@@ -8,4 +8,13 @@ const dungeonMap = [
 	[[22, true], 14, 14, 15, 2, 2, 3, 15, 14, 14, 22]
 ];
 
-export {dungeonMap};
+const maps = {
+	dungeon: {
+		assetId: 'dungeon',
+		spriteWidth: 16,
+		spriteHeight: 16,
+		tiles: dungeonTiles
+	}
+};
+
+export default maps;
