@@ -21,7 +21,7 @@ const loadImage = async imagePath => {
 	}
 };
 
-const loadAsset = async ({id, path, spriteWidth, spriteHeight, tiles, flags}) => {
+const loadAsset = async ({id, path, spriteWidth, spriteHeight, flags}) => {
 	const image = await loadImage(path);
 	const imageWidth = image.width;
 	const imageHeight = image.height;
